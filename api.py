@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS, cross_origin
 # from pipline import classifyPose as cp 
-from Pose_classification import video 
+from Pose_classification import video, finished as EndWebcam
 
 
 app = Flask(__name__)
@@ -13,6 +13,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 cors = CORS(app, resources={r"/vision_iot/*": {"origins": "*"}})
 cors = CORS(app, resources={r"/checkservice/*": {"origins": "*"}})
 
+
+cors = CORS(app, resources={r"/": {"origins": "http://localhost:port"}})
 
 @app.route("/")
 def beging():
@@ -47,8 +49,8 @@ def vision():
                 <h2>Angulo indicador direito - %s</h2>
                 <h2>Angulo minguin esquerdo - %s</h2>
                 <h2>Angulo minguin direito - %s</h2>
-                
-                <a href="/imagem">Voltar</a> 
+                <a href="/">Voltar</a> 
+              
              """% (l_w, r_w, l_i, r_i, l_p, r_p)
 
 @app.route("/imagem")
@@ -86,6 +88,12 @@ def vision_iot():
         Ang_Dedo_Peq_D = l_p,
         Ang_Dedo_Peq_E = r_p,
         )
+
+@app.route("/end", methods=['GET'])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+def endWebcam():
+
+    return EndWebcam()
 
 
 

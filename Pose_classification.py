@@ -4,8 +4,11 @@ import numpy as np
 import time
 import mediapipe as mp
 import matplotlib.pyplot as plt
-from pipline import *
+# from pipline import *
+from pipline2 import *
 import time
+import config as config
+import pandas as pd
 
 # Setup Pose function for video.
 
@@ -38,8 +41,19 @@ pose_video = mp_pose.Holistic(static_image_mode=False, min_detection_confidence=
     # camera_video.set(3,1280)
     # camera_video.set(4,960)
 
+
+
+def finished():
+    config.kill_cam = True
+    # kill_cam = True
+    return "kill_webcam"
+
+
+
 def video():
     global Ang
+
+    
 
     camera_video = cv2.VideoCapture(0)
 
@@ -47,15 +61,23 @@ def video():
     # cv2.namedWindow('Pose Classification', cv2.WINDOW_NORMAL)
 
 
-    if not camera_video.isOpened():
-        print("Camera video is not open")
-        exit()
+    # if not camera_video.isOpened():
+    #     print("Camera video is not open")
+    #     exit()
 
     # Iterate until the webcam is accessed successfully.
     
-    # while camera_video.isOpened():
+    while camera_video.isOpened():
+        
+        if config.kill_cam == True:
+                        
+                for i in range (10):
+                    
+                    print("kill no IF")
+                
+                break
 
-    while True:    
+    # while True:    
         # Read a frame.
         ok, frame = camera_video.read()
         
@@ -92,7 +114,7 @@ def video():
             frame, Ang = classifyPose(landmarks, frame, display=False)
 
            
-
+           
             
             # print(Ang[0])
             
@@ -109,7 +131,7 @@ def video():
         t1 = t2
         # Display the frame.
         cv2.imshow('Pose Classification Hands', frame)
-        print(Ang[0])
+        # print(Ang[0])
         # Wait until a key is pressed.
         # Retreive the ASCII code of the key pressed
 
@@ -119,9 +141,13 @@ def video():
         # Check if 'ESC' is pressed.
         if(k == 27):
             # Break the loop.
-            return Ang[0]
-            # break
+            # return Ang[0]
+            break
         
     # Release the VideoCapture object and close the windows.
     camera_video.release()
     cv2.destroyAllWindows()
+    return Ang[0]
+
+
+
