@@ -229,8 +229,8 @@ def updateAngle_diff():
                         left_pinky_tip_angle_diff, right_pinky_tip_angle_diff])
     
 
-df = pd.DataFrame(columns=["left_wrist_angle_diff", "right_wrist_angle_diff", "left_index_mcp_angle_diff",
-                            "right_index_mcp_angle_diff", "left_pinky_tip_angle_diff", "right_pinky_tip_angle_diff"])
+# df = pd.DataFrame(columns=["left_wrist_angle_diff", "right_wrist_angle_diff", "left_index_mcp_angle_diff",
+#                             "right_index_mcp_angle_diff", "left_pinky_tip_angle_diff", "right_pinky_tip_angle_diff"])
 
 def classifyPose(landmarks, output_image, display=False):
 
@@ -259,6 +259,10 @@ def classifyPose(landmarks, output_image, display=False):
     global right_index_mcp_angle_diff
     global left_pinky_tip_angle_diff
     global right_pinky_tip_angle_diff
+
+    df = pd.DataFrame(columns=["left_wrist_angle_diff", "right_wrist_angle_diff", "left_index_mcp_angle_diff",
+                            "right_index_mcp_angle_diff", "left_pinky_tip_angle_diff", "right_pinky_tip_angle_diff"])
+
 
     '''
     This function classifies yoga poses depending upon the angles of various body joints.
@@ -375,9 +379,7 @@ def classifyPose(landmarks, output_image, display=False):
   
     # Update Diff Angle
     if(time.time() - time_ > 0.2):
-        # df = pd.DataFrame(columns=["left_wrist_angle_diff", "right_wrist_angle_diff", "left_index_mcp_angle_diff",
-        #                 "right_index_mcp_angle_diff", "left_pinky_tip_angle_diff", "right_pinky_tip_angle_diff"])
-      
+    # while(time.time() - time_ > 0.2):   
         left_wrist_angle_diff = abs(left_wrist_angle - left_wrist_angle_previous);
         right_wrist_angle_diff = abs(right_wrist_angle - right_wrist_angle_previous);
         left_index_mcp_angle_diff = abs(left_index_mcp_angle - left_index_mcp_angle_previous);
@@ -390,52 +392,26 @@ def classifyPose(landmarks, output_image, display=False):
         Angle_diff.append([left_wrist_angle_diff, right_wrist_angle_diff, left_index_mcp_angle_diff,
                             right_index_mcp_angle_diff, left_pinky_tip_angle_diff, right_pinky_tip_angle_diff])
         
-        # Angle_diff = [left_wrist_angle_diff, right_wrist_angle_diff, left_index_mcp_angle_diff,
-        #                     right_index_mcp_angle_diff, left_pinky_tip_angle_diff, right_pinky_tip_angle_diff]
-    
-        # # print(Angle_diff) 
+          
+        # df = df.append(pd.DataFrame(data=Angle_diff, columns=["left_wrist_angle_diff", "right_wrist_angle_diff",
+        #                     "left_index_mcp_angle_diff","right_index_mcp_angle_diff", "left_pinky_tip_angle_diff",
+        #                       "right_pinky_tip_angle_diff"]),ignore_index=True)
 
-        df = pd.DataFrame(data=Angle_diff, columns=["left_wrist_angle_diff", "right_wrist_angle_diff", "left_index_mcp_angle_diff",
-                            "right_index_mcp_angle_diff", "left_pinky_tip_angle_diff", "right_pinky_tip_angle_diff"])
         
-        df =  df.append(df, ignore_index=True)
+        df = pl.DataFrame(data=Angle_diff,schema=["left_wrist_angle_diff", "right_wrist_angle_diff",
+                            "left_index_mcp_angle_diff","right_index_mcp_angle_diff", "left_pinky_tip_angle_diff",
+                            "right_pinky_tip_angle_diff"])
+
         
-        print(df)
+        df_2=pl.DataFrame(data=Angle_diff, schema=["left_wrist_angle_diff", "right_wrist_angle_diff",
+                            "left_index_mcp_angle_diff","right_index_mcp_angle_diff", "left_pinky_tip_angle_diff",
+                            "right_pinky_tip_angle_diff"])
+        df_3= pl.concat([df,df_2])
+        print(df_3)
+        
+
         
         
-        # Create a sample DataFrame
-       
-        # df = pl.DataFrame({
-        #     "left_wrist_angle_diff": Angle_diff[0], 
-        #     "right_wrist_angle_diff": Angle_diff[1],
-        #     "left_index_mcp_angle_diff": Angle_diff[2],
-        #     "right_index_mcp_angle_diff": Angle_diff[3],
-        #     "left_pinky_tip_angle_diff": Angle_diff[4],
-        #     "right_pinky_tip_angle_diff": Angle_diff[5]
-        # })
-
-        # df = pl.DataFrame(data= Angle_diff, schema=["left_wrist_angle_diff", "right_wrist_angle_diff", "left_index_mcp_angle_diff",
-        #                     "right_index_mcp_angle_diff", "left_pinky_tip_angle_diff", "right_pinky_tip_angle_diff"])
-
-
-        # print('Primeiro DataFrame')
-        # print(df)
-        # # Create a new row as a Series
-
-        # new_row = pd.Series({
-        #     "left_wrist_angle_diff": Angle_diff[0], 
-        #     "right_wrist_angle_diff": Angle_diff[1],
-        #     "left_index_mcp_angle_diff": Angle_diff[2],
-        #     "right_index_mcp_angle_diff": Angle_diff[3],
-        #     "left_pinky_tip_angle_diff": Angle_diff[4],
-        #     "right_pinky_tip_angle_diff": Angle_diff[5]
-        # })
-
-        # # Concatenate the new row to the DataFrame
-        # df = pl.concat([df, new_row], axis=0)
-
-        # print('Segundo DataFrame')
-        # print(df)
             
         Angles_total = Angle_diff
                
@@ -448,7 +424,7 @@ def classifyPose(landmarks, output_image, display=False):
 
         
         Angle_previous = []
-        Angle_diff = []
+        # Angle_diff = []
         time_ = time.time()
     
     
